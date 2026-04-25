@@ -35,6 +35,12 @@ public class GameModel {
     private static final int ALIEN_BULLET_SPEED = 8;
     private static final int MAX_ALIEN_BULLETS = 6;
 
+    private static final int SHIELD_COUNT = 4;
+    private static final int SHIELD_WIDTH = 80;
+    private static final int SHIELD_HEIGHT = 32;
+    private static final int SHIELD_HEALTH = 3;
+    private static final int SHIELD_Y = FIELD_HEIGHT - 200;
+
     private final Random random = new Random();
 
     private int playerX;
@@ -44,6 +50,7 @@ public class GameModel {
     private int playerBulletY;
 
     private final List<Bullet> alienBullets = new ArrayList<>();
+    private final List<Shield> shields = new ArrayList<>();
 
     private final boolean[][] aliensAlive = new boolean[ALIEN_ROWS][ALIEN_COLUMNS];
     private int alienFormationX;
@@ -63,10 +70,16 @@ public class GameModel {
         playerBulletX = 0;
         playerBulletY = 0;
         alienBullets.clear();
+        shields.clear();
         for (int row = 0; row < ALIEN_ROWS; row++) {
             for (int col = 0; col < ALIEN_COLUMNS; col++) {
                 aliensAlive[row][col] = true;
             }
+        }
+        int spacing = (FIELD_WIDTH - SHIELD_COUNT * SHIELD_WIDTH) / (SHIELD_COUNT + 1);
+        for (int i = 0; i < SHIELD_COUNT; i++) {
+            int x = spacing + i * (SHIELD_WIDTH + spacing);
+            shields.add(new Shield(x, SHIELD_Y, SHIELD_WIDTH, SHIELD_HEIGHT, SHIELD_HEALTH));
         }
         alienFormationX = ALIEN_INITIAL_X;
         alienFormationY = ALIEN_INITIAL_Y;
@@ -161,29 +174,62 @@ public class GameModel {
 
     private void detectCollisions() {
         if (playerBulletActive) {
-            for (int row = 0; row < ALIEN_ROWS; row++) {
-                for (int col = 0; col < ALIEN_COLUMNS; col++) {
-                    if (!aliensAlive[row][col]) {
-                        continue;
-                    }
-                    int alienX = alienFormationX + col * (ALIEN_WIDTH + ALIEN_HORIZONTAL_SPACING);
-                    int alienY = alienFormationY + row * (ALIEN_HEIGHT + ALIEN_VERTICAL_SPACING);
-                    if (rectanglesIntersect(playerBulletX, playerBulletY, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT,
-                            alienX, alienY, ALIEN_WIDTH, ALIEN_HEIGHT)) {
-                        aliensAlive[row][col] = false;
-                        playerBulletActive = false;
-                        score += 10;
-                        break;
+            boolean bulletConsumed = false;
+            for (int i = shields.size() - 1; i >= 0 && !bulletConsumed; i--) {
+                Shield shield = shields.get(i);
+                if (rectanglesIntersect(playerBulletX, playerBulletY, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT,
+                        shield.x, shield.y, shield.width, shield.height)) {
+                    shield.health -= 1;
+                    playerBulletActive = false;
+                    bulletConsumed = true;
+                    if (shield.health <= 0) {
+                        shields.remove(i);
                     }
                 }
-                if (!playerBulletActive) {
-                    break;
+            }
+
+            if (!bulletConsumed) {
+                for (int row = 0; row < ALIEN_ROWS; row++) {
+                    for (int col = 0; col < ALIEN_COLUMNS; col++) {
+                        if (!aliensAlive[row][col]) {
+                            continue;
+                        }
+                        int alienX = alienFormationX + col * (ALIEN_WIDTH + ALIEN_HORIZONTAL_SPACING);
+                        int alienY = alienFormationY + row * (ALIEN_HEIGHT + ALIEN_VERTICAL_SPACING);
+                        if (rectanglesIntersect(playerBulletX, playerBulletY, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT,
+                                alienX, alienY, ALIEN_WIDTH, ALIEN_HEIGHT)) {
+                            aliensAlive[row][col] = false;
+                            playerBulletActive = false;
+                            score += 10;
+                            bulletConsumed = true;
+                            break;
+                        }
+                    }
+                    if (bulletConsumed) {
+                        break;
+                    }
                 }
             }
         }
 
         for (int i = alienBullets.size() - 1; i >= 0; i--) {
             Bullet bullet = alienBullets.get(i);
+            boolean bulletRemoved = false;
+            for (int j = shields.size() - 1; j >= 0 && !bulletRemoved; j--) {
+                Shield shield = shields.get(j);
+                if (rectanglesIntersect(bullet.x, bullet.y, ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT,
+                        shield.x, shield.y, shield.width, shield.height)) {
+                    shield.health -= 1;
+                    alienBullets.remove(i);
+                    bulletRemoved = true;
+                    if (shield.health <= 0) {
+                        shields.remove(j);
+                    }
+                }
+            }
+            if (bulletRemoved) {
+                continue;
+            }
             if (rectanglesIntersect(bullet.x, bullet.y, ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT,
                     playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT)) {
                 alienBullets.remove(i);
@@ -260,6 +306,10 @@ public class GameModel {
         return true;
     }
 
+    public List<Shield> getShields() {
+        return new ArrayList<>(shields);
+    }
+
     public static class Bullet {
         public int x;
         public int y;
@@ -269,6 +319,22 @@ public class GameModel {
             this.x = x;
             this.y = y;
             this.dy = dy;
+        }
+    }
+
+    public static class Shield {
+        public final int x;
+        public final int y;
+        public final int width;
+        public final int height;
+        public int health;
+
+        public Shield(int x, int y, int width, int height, int health) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.health = health;
         }
     }
 }
