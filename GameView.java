@@ -36,6 +36,7 @@ public class GameView extends JPanel {
         drawScoreAndLives(g);
         drawPlayer(g);
         drawAliens(g);
+        drawShields(g);
         drawBullets(g);
         if (model.isGameOver()) {
             drawGameOver(g);
@@ -73,6 +74,25 @@ public class GameView extends JPanel {
                 g.setColor(Color.WHITE);
                 g.drawRect(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
             }
+        }
+    }
+
+    private void drawShields(Graphics g) {
+        List<GameModel.Shield> shields = model.getShields();
+        for (GameModel.Shield shield : shields) {
+            if (shield.health <= 0) {
+                continue;
+            }
+            if (shield.health >= 3) {
+                g.setColor(Color.GREEN);
+            } else if (shield.health == 2) {
+                g.setColor(Color.ORANGE);
+            } else {
+                g.setColor(Color.RED.darker());
+            }
+            g.fillRect(shield.x, shield.y, shield.width, shield.height);
+            g.setColor(Color.WHITE);
+            g.drawRect(shield.x, shield.y, shield.width, shield.height);
         }
     }
 
