@@ -25,6 +25,10 @@ public class GameModel {
     private static final int ALIEN_INITIAL_Y = 60;
     private static final int ALIEN_MOVE_STEP = 8;
     private static final int ALIEN_DESCENT = 20;
+    private static final int ALIEN_SPEED_INCREMENT = 1;
+    private static final int BASE_TIMER_INTERVAL_MS = 50;
+    private static final int TIMER_DECREMENT_PER_SPEED = 2;
+    private static final int MIN_TIMER_INTERVAL_MS = 20;
 
     private static final int PLAYER_BULLET_WIDTH = 6;
     private static final int PLAYER_BULLET_HEIGHT = 12;
@@ -51,6 +55,7 @@ public class GameModel {
 
     private final List<Bullet> alienBullets = new ArrayList<>();
     private final List<Shield> shields = new ArrayList<>();
+    private int alienMoveStep = ALIEN_MOVE_STEP;
 
     private final boolean[][] aliensAlive = new boolean[ALIEN_ROWS][ALIEN_COLUMNS];
     private int alienFormationX;
@@ -84,6 +89,7 @@ public class GameModel {
         alienFormationX = ALIEN_INITIAL_X;
         alienFormationY = ALIEN_INITIAL_Y;
         alienDirection = 1;
+        alienMoveStep = ALIEN_MOVE_STEP;
         score = 0;
         lives = 3;
     }
@@ -130,7 +136,7 @@ public class GameModel {
 
     private void moveAliens() {
         int formationWidth = ALIEN_COLUMNS * (ALIEN_WIDTH + ALIEN_HORIZONTAL_SPACING) - ALIEN_HORIZONTAL_SPACING;
-        int nextX = alienFormationX + alienDirection * ALIEN_MOVE_STEP;
+        int nextX = alienFormationX + alienDirection * alienMoveStep;
         boolean hitRightEdge = nextX + formationWidth > FIELD_WIDTH - 20;
         boolean hitLeftEdge = nextX < 20;
 
@@ -201,6 +207,7 @@ public class GameModel {
                             aliensAlive[row][col] = false;
                             playerBulletActive = false;
                             score += 10;
+                            alienMoveStep += ALIEN_SPEED_INCREMENT;
                             bulletConsumed = true;
                             break;
                         }
@@ -289,6 +296,11 @@ public class GameModel {
 
     public int getLives() {
         return lives;
+    }
+
+    public int getRecommendedTimerInterval() {
+        int interval = BASE_TIMER_INTERVAL_MS - (alienMoveStep - ALIEN_MOVE_STEP) * TIMER_DECREMENT_PER_SPEED;
+        return Math.max(MIN_TIMER_INTERVAL_MS, interval);
     }
 
     public boolean isGameOver() {
