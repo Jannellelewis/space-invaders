@@ -105,3 +105,9 @@ FIXES: i said this to the AI 'theres an error: Exception in thread "main" java.l
         at ModelTester.main(ModelTester.java:14)
 PS C:\Users\Jannelle\Downloads\space-invaders> '
 OBSERVATIONS: had some errors but thats inevitable
+
+Prompt 11: 
+USED: Looking at GameModel.java, add a static test method to ModelTester.java called testPlayerBoundary. It should call the player's left-movement method two hundred times and use the check helper to verify the player's x position never goes below zero. Hook it into main
+RESULTS: the test (player x never never goes below 0) passes
+FIXES: while it was running there was a 1 near the problem in the terminal area but it resolved it
+OBSERVATIONS: i might be running the wrong thing but now i cant open the actual window where the game happens
