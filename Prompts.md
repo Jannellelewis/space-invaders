@@ -127,3 +127,10 @@ USED:  Add a reset() to Model; Controller calls it on R press. Make a reset scre
 RESULTS: when you press R it asks if you want to restart and if you dont you press ESC to continue to the game. On the reset screen it also shows the current score
 FIXES: none
 OBSERVATIONS the AI took longer to fufil this prompt
+
+
+Prompt 13: 
+USED: Alternate between two alien sprite states every N ticks to simulate the classic flicker. Model tracks a boolean animFrame; View draws different shapes based on it. The iteration challenge: keeping animation and movement in sync without doubling the speed.
+RESULTS: the enemy goes from a rectangle to a oval every couple seconds
+FIXES: none
+OBSERVATIONS: it didnt make me do any other iterations maybe i was just supposed to do it like 1 sentance at a time...?
