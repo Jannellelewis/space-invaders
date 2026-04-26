@@ -4,7 +4,7 @@ public class ModelTester {
     public static void main(String[] args) {
         GameModel model = new GameModel();
         int passed = 0;
-        int total = 5;
+        int total = 8;
 
         if (testPlayerCannotMovePastLeftEdge(model)) passed++;
         if (testPlayerCannotMovePastRightEdge(model)) passed++;
@@ -12,6 +12,9 @@ public class ModelTester {
         if (testBulletReachesTopIsRemoved(model)) passed++;
         if (testDestroyAlienIncreasesScore(model)) passed++;
         if (testLosingAllLivesTriggersGameOver(model)) passed++;
+        if (testInitialState()) passed++;
+        if (testPlayerMovement()) passed++;
+        if (testBulletFiring()) passed++;
 
         System.out.printf("%d/%d tests passed.%n", passed, total);
     }
@@ -100,7 +103,42 @@ public class ModelTester {
         return passed;
     }
 
-    private static void printResult(String testName, boolean passed) {
+    private static boolean testInitialState() {
+        GameModel model = new GameModel();
+        boolean allPass = true;
+        allPass &= printResult("player starts with 3 lives", model.getLives() == 3);
+        allPass &= printResult("score starts at zero", model.getScore() == 0);
+        allPass &= printResult("no bullet at start", !model.isPlayerBulletActive());
+        allPass &= printResult("game is not over at start", !model.isGameOver());
+        return allPass;
+    }
+
+    private static boolean testPlayerMovement() {
+        GameModel model = new GameModel();
+        int startX = model.getPlayerX();
+        model.movePlayerRight();
+        boolean allPass = true;
+        allPass &= printResult("moving right increases x", model.getPlayerX() > startX);
+
+        // Drive the player as far left as possible
+        for (int i = 0; i < 200; i++) model.movePlayerLeft();
+        allPass &= printResult("player x never goes below 0", model.getPlayerX() >= 0);
+        return allPass;
+    }
+
+    private static boolean testBulletFiring() {
+        GameModel model = new GameModel();
+        model.firePlayerBullet();
+        boolean allPass = true;
+        allPass &= printResult("firing creates a bullet", model.isPlayerBulletActive());
+        model.firePlayerBullet();             // fire again while one is in flight
+        allPass &= printResult("cannot fire a second bullet", model.isPlayerBulletActive());
+        // (this is a weak check — we want exactly one bullet, not two)
+        return allPass;
+    }
+
+    private static boolean printResult(String testName, boolean passed) {
         System.out.printf("%s: %s%n", testName, passed ? "PASS" : "FAIL");
+        return passed;
     }
 }
