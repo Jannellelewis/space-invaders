@@ -109,4 +109,11 @@ Prompt 11:
 USED: Looking at GameModel.java, add a static test method to ModelTester.java called testPlayerBoundary. It should call the player's left-movement method two hundred times and use the check helper to verify the player's x position never goes below zero. Hook it into main
 RESULTS: the test (player x never never goes below 0) passes
 FIXES: while it was running there was a 1 near the problem in the terminal area but it resolved it
-OBSERVATIONS: i might be running the wrong thing but now i cant open the actual window where the game happens
+OBSERVATIONS: i might be running the wrong thing but now i cant open the actual window where the game happens, update i found it
+
+
+Prompt 12: 
+USED:  Add a reset() to Model; Controller calls it on R press. Make a reset screen that shows the score and asks if they want to reset
+RESULTS: when you press R it asks if you want to restart and if you dont you press ESC to continue to the game. On the reset screen it also shows the current score
+FIXES: none
+OBSERVATIONS the AI took longer to fufil this prompt
