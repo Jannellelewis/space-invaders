@@ -4,7 +4,7 @@ public class ModelTester {
     public static void main(String[] args) {
         GameModel model = new GameModel();
         int passed = 0;
-        int total = 8;
+        int total = 10;
 
         if (testPlayerCannotMovePastLeftEdge(model)) passed++;
         if (testPlayerCannotMovePastRightEdge(model)) passed++;
@@ -15,6 +15,8 @@ public class ModelTester {
         if (testInitialState()) passed++;
         if (testPlayerMovement()) passed++;
         if (testBulletFiring()) passed++;
+        if (testAlienDestruction()) passed++;
+        if (testGameOver()) passed++;
 
         System.out.printf("%d/%d tests passed.%n", passed, total);
     }
@@ -134,6 +136,27 @@ public class ModelTester {
         model.firePlayerBullet();             // fire again while one is in flight
         allPass &= printResult("cannot fire a second bullet", model.isPlayerBulletActive());
         // (this is a weak check — we want exactly one bullet, not two)
+        return allPass;
+    }
+
+    private static boolean testAlienDestruction() {
+        GameModel model = new GameModel();
+        int before = model.getAlienCount();
+        model.destroyAlien(0, 0);
+        boolean allPass = true;
+        allPass &= printResult("alien count decreases on hit", model.getAlienCount() == before - 1);
+        allPass &= printResult("score increases on hit", model.getScore() > 0);
+        return allPass;
+    }
+
+    private static boolean testGameOver() {
+        GameModel model = new GameModel();
+        // Destroy all aliens
+        for (int row = 0; row < 5; row++)
+            for (int col = 0; col < 11; col++)
+                model.destroyAlien(row, col);
+        model.checkCollisions();
+        boolean allPass = printResult("game over when all aliens gone", model.isGameOver());
         return allPass;
     }
 

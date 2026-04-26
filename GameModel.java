@@ -304,7 +304,7 @@ public class GameModel {
     }
 
     public boolean isGameOver() {
-        return lives <= 0;
+        return lives <= 0 || allAliensDestroyed();
     }
 
     public boolean allAliensDestroyed() {
@@ -316,6 +316,28 @@ public class GameModel {
             }
         }
         return true;
+    }
+
+    public int getAlienCount() {
+        int count = 0;
+        for (boolean[] row : aliensAlive) {
+            for (boolean alive : row) {
+                if (alive) count++;
+            }
+        }
+        return count;
+    }
+
+    public void destroyAlien(int row, int col) {
+        if (aliensAlive[row][col]) {
+            aliensAlive[row][col] = false;
+            score += 10;
+            alienMoveStep += ALIEN_SPEED_INCREMENT;
+        }
+    }
+
+    public void checkCollisions() {
+        detectCollisions();
     }
 
     public List<Shield> getShields() {
