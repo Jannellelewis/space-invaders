@@ -11,6 +11,7 @@ public class GameController {
     private final GameView view;
     private final JFrame frame;
     private final Timer gameTimer;
+    private boolean resetScreenVisible;
 
     public GameController() {
         model = new GameModel();
@@ -37,13 +38,27 @@ public class GameController {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_LEFT:
-                model.movePlayerLeft();
+                if (!resetScreenVisible) {
+                    model.movePlayerLeft();
+                }
                 break;
             case KeyEvent.VK_RIGHT:
-                model.movePlayerRight();
+                if (!resetScreenVisible) {
+                    model.movePlayerRight();
+                }
                 break;
             case KeyEvent.VK_SPACE:
-                model.firePlayerBullet();
+                if (!resetScreenVisible) {
+                    model.firePlayerBullet();
+                }
+                break;
+            case KeyEvent.VK_R:
+                handleResetRequest();
+                break;
+            case KeyEvent.VK_ESCAPE:
+                if (resetScreenVisible) {
+                    cancelResetScreen();
+                }
                 break;
         }
     }
@@ -54,6 +69,31 @@ public class GameController {
         if (model.isGameOver()) {
             gameTimer.stop();
         }
+    }
+
+    private void handleResetRequest() {
+        if (resetScreenVisible) {
+            model.reset();
+            resetScreenVisible = false;
+            view.setResetScreenVisible(false);
+            if (!gameTimer.isRunning()) {
+                gameTimer.start();
+            }
+        } else {
+            resetScreenVisible = true;
+            view.setResetScreenVisible(true);
+            gameTimer.stop();
+        }
+        view.repaint();
+    }
+
+    private void cancelResetScreen() {
+        resetScreenVisible = false;
+        view.setResetScreenVisible(false);
+        if (!gameTimer.isRunning()) {
+            gameTimer.start();
+        }
+        view.repaint();
     }
 
     public static void main(String[] args) {

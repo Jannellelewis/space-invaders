@@ -22,6 +22,7 @@ public class GameView extends JPanel {
     private static final int ALIEN_BULLET_HEIGHT = 12;
 
     private final GameModel model;
+    private boolean showResetScreen;
 
     public GameView(GameModel model) {
         this.model = model;
@@ -38,7 +39,9 @@ public class GameView extends JPanel {
         drawAliens(g);
         drawShields(g);
         drawBullets(g);
-        if (model.isGameOver()) {
+        if (showResetScreen) {
+            drawResetScreen(g);
+        } else if (model.isGameOver()) {
             drawGameOver(g);
         }
     }
@@ -118,5 +121,35 @@ public class GameView extends JPanel {
         int x = (getWidth() - textWidth) / 2;
         int y = (getHeight() - textHeight) / 2 + metrics.getAscent();
         g.drawString(message, x, y);
+    }
+
+    private void drawResetScreen(Graphics g) {
+        String title = "RESET GAME?";
+        String scoreText = "Current score: " + model.getScore();
+        String prompt = "Press R again to reset, or ESC to cancel.";
+
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SansSerif", Font.BOLD, 40));
+        FontMetrics titleMetrics = g.getFontMetrics();
+        int titleWidth = titleMetrics.stringWidth(title);
+        int titleX = (getWidth() - titleWidth) / 2;
+        int titleY = getHeight() / 2 - 40;
+        g.drawString(title, titleX, titleY);
+
+        g.setFont(new Font("SansSerif", Font.PLAIN, 24));
+        FontMetrics metrics = g.getFontMetrics();
+        int scoreWidth = metrics.stringWidth(scoreText);
+        int promptWidth = metrics.stringWidth(prompt);
+        int scoreX = (getWidth() - scoreWidth) / 2;
+        int promptX = (getWidth() - promptWidth) / 2;
+        g.drawString(scoreText, scoreX, titleY + 50);
+        g.drawString(prompt, promptX, titleY + 90);
+    }
+
+    public void setResetScreenVisible(boolean visible) {
+        this.showResetScreen = visible;
     }
 }

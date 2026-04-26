@@ -4,11 +4,13 @@ RESULTS: a blank window opens and 3 java classes were made
 FIXES: none
 OBSERVATIONS: AI did this pretty fast
 
+
 Prompt 2: 
 USED: Fill in GameModel.java. The model should track: the player's horizontal position, the alien formation (5 rows of 11), the player's bullet (one at a time), alien bullets, the score, and lives remaining (start with 3). Add logic to: move the player left and right, fire a player bullet if one isn't already in flight, advance the player's bullet each tick, move the alien formation right until the edge then down and reverse, fire alien bullets at random intervals, and detect collisions between bullets and aliens or the player. No Swing imports.
 RESULTS: the player can move to the left and the right, the alien throws bullets at you randomly and the alien moves around and gets closer to you. if a bullet hits you, you lose a life (but nothing can actually be seen yet)
 FIXES: none
 OBSERVATIONS: i wasnt sure if the player was supposed to send a bullet or just get hit by one
+
 
 Prompt 3: 
 USED: Fill in GameView.java. It should take a reference to the model and draw everything the player sees: the player, the alien formation, both sets of bullets, the score, and remaining lives. Show a centered game-over message when the game ends. The view should only read from the model — it must never change game state.
@@ -16,11 +18,13 @@ RESULTS: draws the player, alien and the bullets. Now the score changes when you
 FIXES: none
 OBSERVATIONS: now i can actually see what the things look like
 
+
 Prompt 4: 
 USED: Fill in GameController.java. Add keyboard controls so the player can move left and right with the arrow keys and fire with the spacebar. Add a game loop using a Swing timer that updates the model each tick and redraws the view. Stop the loop when the game is over.
 RESULTS: connects so now i can move around and i can fire bullets to the alien
 FIXES: none
 OBSERVATIONS:its starting to look like the real game
+
 
 Prompt 5: 
 USED:Create a separate file called ModelTester.java with a main method. It should create a GameModel, call its methods directly, and print PASS or FAIL for each check. Write tests for at least five behaviors: the player cannot move past the left or right edge, firing while a bullet is already in flight does nothing, a bullet that reaches the top is removed, destroying an alien increases the score, and losing all lives triggers the game-over state. No testing libraries — just plain Java.
@@ -28,11 +32,13 @@ RESULTS: it terminal it prints the differant types of tests, all 5 tests passed
 FIXES: none
 OBSERVATIONS: i was glad all the test passed the first time so didnt have to debug
 
+
 Prompt 6: 
 USED: In GameModel.java, add a list of shield rectangles positioned between the player and the alien formation. Reduce a shield's health when hit by a bullet from either side. Remove the shield when health reaches zero. No Swing imports
 RESULTS: 4 rectangle shields are made but you cant see them yet
 FIXES: none
 OBSERVATIONS: I though i would be able to see the shields after this prompt but the next one draws it
+
 
 Prompt 7: 
 USED: In GameView.java's paintComponent method only, draw the shields from the model's shield list. Use the shield's health value to choose a color from full green to dim red. Do not call any model mutating methods.
@@ -40,11 +46,13 @@ RESULTS: now i can see the shields and they change color when hit with a bullet 
 FIXES: none
 OBSERVATIONS: I thought it would be like a shield around the player but i didnt read the prompt close enough
 
+
 Prompt 8: 
 USED: In GameModel.java, increase the alien movement speed each time an alien is destroyed. Expose a method the Controller can call to get the current recommended timer interval. Do not touch the View.
 RESULTS: the alien speed increase when they get hit with a bullet from the player
 FIXES: none
 OBSERVATIONS: the alien gets really fast pretty
+
 
 Prompt 9:
 USED: do a test exact;y like the following but so there are no problems and it runs the same: static void testInitialState() {
@@ -76,6 +84,7 @@ RESULTS: all those test passed
 FIXES: at first it replaced the previous test but i told it that it should be in addition to
 OBSERVATIONS: im glad they passed so i didnt have to try and fix stuff
 
+
 Prompt 10:
 USED: add this test into the modeltester file so that it will run with my program: static void testAlienDestruction() {
 GameModel model = new GameModel();
@@ -104,6 +113,7 @@ FIXES: i said this to the AI 'theres an error: Exception in thread "main" java.l
         at ModelTester.testLosingAllLivesTriggersGameOver(ModelTester.java:103)
         at ModelTester.main(ModelTester.java:14)'
 OBSERVATIONS: had some errors but thats inevitable
+
 
 Prompt 11: 
 USED: Looking at GameModel.java, add a static test method to ModelTester.java called testPlayerBoundary. It should call the player's left-movement method two hundred times and use the check helper to verify the player's x position never goes below zero. Hook it into main
