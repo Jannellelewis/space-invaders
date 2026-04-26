@@ -4,7 +4,7 @@ public class ModelTester {
     public static void main(String[] args) {
         GameModel model = new GameModel();
         int passed = 0;
-        int total = 10;
+        int total = 11;
 
         if (testPlayerCannotMovePastLeftEdge(model)) passed++;
         if (testPlayerCannotMovePastRightEdge(model)) passed++;
@@ -14,6 +14,7 @@ public class ModelTester {
         if (testLosingAllLivesTriggersGameOver(model)) passed++;
         if (testInitialState()) passed++;
         if (testPlayerMovement()) passed++;
+        if (testPlayerBoundary()) passed++;
         if (testBulletFiring()) passed++;
         if (testAlienDestruction()) passed++;
         if (testGameOver()) passed++;
@@ -126,6 +127,14 @@ public class ModelTester {
         for (int i = 0; i < 200; i++) model.movePlayerLeft();
         allPass &= printResult("player x never goes below 0", model.getPlayerX() >= 0);
         return allPass;
+    }
+
+    private static boolean testPlayerBoundary() {
+        GameModel model = new GameModel();
+        for (int i = 0; i < 200; i++) {
+            model.movePlayerLeft();
+        }
+        return printResult("player boundary never drops below zero", model.getPlayerX() >= 0);
     }
 
     private static boolean testBulletFiring() {

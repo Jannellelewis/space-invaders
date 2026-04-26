@@ -102,8 +102,7 @@ FIXES: i said this to the AI 'theres an error: Exception in thread "main" java.l
 
         at GameModel.isGameOver(GameModel.java:307)
         at ModelTester.testLosingAllLivesTriggersGameOver(ModelTester.java:103)
-        at ModelTester.main(ModelTester.java:14)
-PS C:\Users\Jannelle\Downloads\space-invaders> '
+        at ModelTester.main(ModelTester.java:14)'
 OBSERVATIONS: had some errors but thats inevitable
 
 Prompt 11: 
