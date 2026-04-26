@@ -26,6 +26,7 @@ public class GameModel {
     private static final int ALIEN_MOVE_STEP = 8;
     private static final int ALIEN_DESCENT = 20;
     private static final int ALIEN_SPEED_INCREMENT = 1;
+    private static final int ANIMATION_TOGGLE_TICKS = 10;
     private static final int BASE_TIMER_INTERVAL_MS = 50;
     private static final int TIMER_DECREMENT_PER_SPEED = 2;
     private static final int MIN_TIMER_INTERVAL_MS = 20;
@@ -56,6 +57,8 @@ public class GameModel {
     private final List<Bullet> alienBullets = new ArrayList<>();
     private final List<Shield> shields = new ArrayList<>();
     private int alienMoveStep = ALIEN_MOVE_STEP;
+    private boolean animFrame;
+    private int animationTick;
 
     private final boolean[][] aliensAlive = new boolean[ALIEN_ROWS][ALIEN_COLUMNS];
     private int alienFormationX;
@@ -90,6 +93,8 @@ public class GameModel {
         alienFormationY = ALIEN_INITIAL_Y;
         alienDirection = 1;
         alienMoveStep = ALIEN_MOVE_STEP;
+        animFrame = false;
+        animationTick = 0;
         score = 0;
         lives = 3;
     }
@@ -117,11 +122,20 @@ public class GameModel {
     }
 
     public void tick() {
+        updateAnimation();
         advancePlayerBullet();
         moveAliens();
         maybeFireAlienBullet();
         advanceAlienBullets();
         detectCollisions();
+    }
+
+    private void updateAnimation() {
+        animationTick++;
+        if (animationTick >= ANIMATION_TOGGLE_TICKS) {
+            animationTick = 0;
+            animFrame = !animFrame;
+        }
     }
 
     private void advancePlayerBullet() {
@@ -301,6 +315,10 @@ public class GameModel {
     public int getRecommendedTimerInterval() {
         int interval = BASE_TIMER_INTERVAL_MS - (alienMoveStep - ALIEN_MOVE_STEP) * TIMER_DECREMENT_PER_SPEED;
         return Math.max(MIN_TIMER_INTERVAL_MS, interval);
+    }
+
+    public boolean isAnimFrame() {
+        return animFrame;
     }
 
     public boolean isGameOver() {

@@ -72,10 +72,17 @@ public class GameView extends JPanel {
                 }
                 int x = model.getAlienFormationX() + col * (ALIEN_WIDTH + ALIEN_HORIZONTAL_SPACING);
                 int y = model.getAlienFormationY() + row * (ALIEN_HEIGHT + ALIEN_VERTICAL_SPACING);
-                g.setColor(Color.GREEN);
-                g.fillRect(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
-                g.setColor(Color.WHITE);
-                g.drawRect(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
+                if (model.isAnimFrame()) {
+                    g.setColor(Color.GREEN);
+                    g.fillOval(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
+                    g.setColor(Color.WHITE);
+                    g.drawOval(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
+                } else {
+                    g.setColor(Color.GREEN);
+                    g.fillRect(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
+                    g.setColor(Color.WHITE);
+                    g.drawRect(x, y, ALIEN_WIDTH, ALIEN_HEIGHT);
+                }
             }
         }
     }
